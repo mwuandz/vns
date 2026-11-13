@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Vietnam Sports Daily">
+  <rect width="32" height="32" rx="5" fill="#f4f5f7"/>
+  <rect x="3" y="4" width="26" height="2.5" fill="#d71920"/>
+  <path d="M7.2 9.2h3.1l5.7 10.4 5.7-10.4h3.1L16 24.2 7.2 9.2z" fill="#171b22"/>
+  <rect x="3" y="25.5" width="26" height="2.5" fill="#171b22"/>
+</svg>
