@@ -1,6 +1,7 @@
 import { createServerFn } from "@tanstack/react-start";
 import { authMiddleware } from "@/lib/auth/middleware";
 import { getSql } from "@/lib/db";
+import { requireDeskAdmin } from "@/lib/staff.functions";
 
 export type FooterBanner = {
   imageUrl: string;
@@ -61,7 +62,7 @@ function cleanBanner(input: unknown): FooterBanner {
 
 async function readBanner() {
   const sql = await getSql();
-  const rows = await sql<Row>`select image_url, href, label, enabled from footer_banner where id = 1 limit 1`;
+  const rows = await sql<Row>`select image_url, href, label, enabled from ad_slots where slot = 'footer' limit 1`;
   return toBanner(rows[0]);
 }
 
@@ -70,16 +71,24 @@ export const loadFooterBanner = createServerFn({ method: "GET" }).handler(async 
 export const saveFooterBanner = createServerFn({ method: "POST" })
   .middleware([authMiddleware])
   .validator((input: unknown) => cleanBanner(input))
-  .handler(async ({ data }) => {
+  .handler(async ({ data, context }) => {
+    await requireDeskAdmin(context.userId, "Chỉ admin được sửa quảng cáo");
     const sql = await getSql();
-    const rows = await sql<Row>`insert into footer_banner (id, image_url, href, label, enabled, updated_at)
+    const rows = await sql<Row>`insert into ad_slots (slot, image_url, href, label, enabled)
+      values ('footer', ${data.imageUrl}, ${data.href}, ${data.label}, ${data.enabled})
+      on conflict (slot) do update set
+        image_url = excluded.image_url,
+        href = excluded.href,
+        label = excluded.label,
+        enabled = excluded.enabled
+      returning image_url, href, label, enabled`;
+    await sql`insert into footer_banner (id, image_url, href, label, enabled, updated_at)
       values (1, ${data.imageUrl}, ${data.href}, ${data.label}, ${data.enabled}, now())
       on conflict (id) do update set
         image_url = excluded.image_url,
         href = excluded.href,
         label = excluded.label,
         enabled = excluded.enabled,
-        updated_at = now()
-      returning image_url, href, label, enabled`;
+        updated_at = now()`;
     return toBanner(rows[0]);
   });

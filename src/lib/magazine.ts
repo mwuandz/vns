@@ -14,6 +14,10 @@ export type Post = {
   minutes: number;
   publishedAt: string;
   updatedAt: string;
+  status: string;
+  publishAt: string;
+  seoTitle: string;
+  seoDescription: string;
 };
 
 export const CATEGORIES = [
@@ -140,16 +144,98 @@ export function formatWhen(iso: string) {
   }).format(date);
 }
 
-export type Block = { type: "p" | "quote"; text: string };
+export type Inline =
+  | { type: "text"; text: string }
+  | { type: "bold"; text: string }
+  | { type: "italic"; text: string }
+  | { type: "strike"; text: string }
+  | { type: "link"; text: string; href: string };
+
+export type Block =
+  | { type: "p" | "quote" | "h2"; inlines: Inline[] }
+  | { type: "list"; ordered: boolean; items: Inline[][] }
+  | { type: "image"; src: string; alt: string }
+  | { type: "video"; src: string; title: string }
+  | { type: "hr" };
+
+const INLINE = /~~([^~]+)~~|\*\*([^*]+)\*\*|\*([^*]+)\*|\[([^\]]+)\]\((https?:\/\/[^\s)]+)\)/g;
+
+export function videoEmbed(url: string): { src: string; title: string } | null {
+  let parsed: URL;
+  try {
+    parsed = new URL(url);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== "https:") return null;
+  const host = parsed.hostname.replace(/^www\./, "");
+  if (host === "youtu.be") {
+    const id = parsed.pathname.replace(/^\//, "").split("/")[0] ?? "";
+    return /^[\w-]{6,20}$/.test(id)
+      ? { src: `https://www.youtube-nocookie.com/embed/${id}`, title: "YouTube" }
+      : null;
+  }
+  if (host === "youtube.com" || host === "m.youtube.com" || host === "youtube-nocookie.com") {
+    const fromQuery = parsed.searchParams.get("v") ?? "";
+    const fromPath = parsed.pathname.split("/").filter(Boolean).pop() ?? "";
+    const id = /^[\w-]{6,20}$/.test(fromQuery) ? fromQuery : fromPath;
+    return /^[\w-]{6,20}$/.test(id)
+      ? { src: `https://www.youtube-nocookie.com/embed/${id}`, title: "YouTube" }
+      : null;
+  }
+  if (host === "vimeo.com" || host === "player.vimeo.com") {
+    const id = parsed.pathname.split("/").filter((part) => /^\d+$/.test(part)).pop() ?? "";
+    return id ? { src: `https://player.vimeo.com/video/${id}`, title: "Vimeo" } : null;
+  }
+  if (/\.(mp4|webm)$/i.test(parsed.pathname)) return { src: parsed.toString(), title: "file" };
+  return null;
+}
+
+export function inlineMarks(text: string): Inline[] {
+  const marks: Inline[] = [];
+  let cursor = 0;
+  for (const match of text.matchAll(INLINE)) {
+    const index = match.index ?? 0;
+    if (index > cursor) marks.push({ type: "text", text: text.slice(cursor, index) });
+    if (match[1]) marks.push({ type: "strike", text: match[1] });
+    else if (match[2]) marks.push({ type: "bold", text: match[2] });
+    else if (match[3]) marks.push({ type: "italic", text: match[3] });
+    else if (match[4] && match[5]) marks.push({ type: "link", text: match[4], href: match[5] });
+    cursor = index + match[0].length;
+  }
+  if (cursor < text.length) marks.push({ type: "text", text: text.slice(cursor) });
+  return marks.length ? marks : [{ type: "text", text }];
+}
 
 export function articleBlocks(body: string): Block[] {
   return body
     .split(/\n\s*\n/)
     .map((chunk) => chunk.trim())
     .filter(Boolean)
-    .map((text) =>
-      text.startsWith(">")
-        ? { type: "quote" as const, text: text.replace(/^>\s?/, "").trim() }
-        : { type: "p" as const, text },
-    );
+    .map((chunk): Block => {
+      if (chunk === "---") return { type: "hr" };
+      const image = chunk.match(/^!\[([^\]]*)\]\(((?:https?:\/\/|\/media\/)[^\s)]+)\)$/);
+      if (image?.[2]) return { type: "image", alt: image[1] ?? "", src: image[2] };
+      const video = chunk.match(/^@\[([^\]]*)\]\(((?:https?:\/\/|\/media\/)[^\s)]+)\)$/);
+      if (video?.[2] && (video[2].startsWith("/media/") || videoEmbed(video[2]))) {
+        return { type: "video", src: video[2], title: video[1] || "Video" };
+      }
+      if (chunk.startsWith("## ")) return { type: "h2", inlines: inlineMarks(chunk.slice(3).trim()) };
+      if (chunk.startsWith(">")) {
+        const quote = chunk
+          .split("\n")
+          .map((line) => line.replace(/^>\s?/, ""))
+          .join(" ")
+          .trim();
+        return { type: "quote", inlines: inlineMarks(quote) };
+      }
+      const lines = chunk.split("\n").map((line) => line.trim()).filter(Boolean);
+      if (lines.length && lines.every((line) => /^[-*]\s+/.test(line))) {
+        return { type: "list", ordered: false, items: lines.map((line) => inlineMarks(line.replace(/^[-*]\s+/, ""))) };
+      }
+      if (lines.length && lines.every((line) => /^\d+\.\s+/.test(line))) {
+        return { type: "list", ordered: true, items: lines.map((line) => inlineMarks(line.replace(/^\d+\.\s+/, ""))) };
+      }
+      return { type: "p", inlines: inlineMarks(chunk) };
+    });
 }

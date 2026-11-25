@@ -13,7 +13,6 @@ function DeskLayout() {
         <div className="wrap">
           <div>
             <b>Bàn biên tập</b>
-            <span> · Lê Phan</span>
           </div>
           <div className="desk-actions">
             <UserButton />

@@ -13,11 +13,18 @@ import { Route as IndexRouteImport } from './routes/index'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as QuanTriRouteImport } from './routes/quan-tri'
 import { Route as TinRouteImport } from './routes/tin'
+import { Route as ApiMediaRouteImport } from './routes/api/media'
 import { Route as BaiSlugRouteImport } from './routes/bai.$slug'
+import { Route as MediaIdRouteImport } from './routes/media.$id'
 import { Route as MucSlugRouteImport } from './routes/muc.$slug'
 import { Route as QuanTriIndexRouteImport } from './routes/quan-tri.index'
 import { Route as QuanTriIdRouteImport } from './routes/quan-tri.$id'
 import { Route as QuanTriBannerRouteImport } from './routes/quan-tri.banner'
+import { Route as QuanTriNhatKyRouteImport } from './routes/quan-tri.nhat-ky'
+import { Route as QuanTriThanhVienRouteImport } from './routes/quan-tri.thanh-vien'
+import { Route as QuanTriThongKeRouteImport } from './routes/quan-tri.thong-ke'
+import { Route as QuanTriThungRacRouteImport } from './routes/quan-tri.thung-rac'
+import { Route as QuanTriTuyChinhRouteImport } from './routes/quan-tri.tuy-chinh'
 import { Route as QuanTriVietRouteImport } from './routes/quan-tri.viet'
 import { Route as ApiAuthSplatRouteImport } from './routes/api/auth/$'
 
@@ -41,9 +48,19 @@ const TinRoute = TinRouteImport.update({
   path: '/tin',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ApiMediaRoute = ApiMediaRouteImport.update({
+  id: '/api/media',
+  path: '/api/media',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const BaiSlugRoute = BaiSlugRouteImport.update({
   id: '/bai/$slug',
   path: '/bai/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const MediaIdRoute = MediaIdRouteImport.update({
+  id: '/media/$id',
+  path: '/media/$id',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MucSlugRoute = MucSlugRouteImport.update({
@@ -66,6 +83,31 @@ const QuanTriBannerRoute = QuanTriBannerRouteImport.update({
   path: '/banner',
   getParentRoute: () => QuanTriRoute,
 } as any)
+const QuanTriNhatKyRoute = QuanTriNhatKyRouteImport.update({
+  id: '/nhat-ky',
+  path: '/nhat-ky',
+  getParentRoute: () => QuanTriRoute,
+} as any)
+const QuanTriThanhVienRoute = QuanTriThanhVienRouteImport.update({
+  id: '/thanh-vien',
+  path: '/thanh-vien',
+  getParentRoute: () => QuanTriRoute,
+} as any)
+const QuanTriThongKeRoute = QuanTriThongKeRouteImport.update({
+  id: '/thong-ke',
+  path: '/thong-ke',
+  getParentRoute: () => QuanTriRoute,
+} as any)
+const QuanTriThungRacRoute = QuanTriThungRacRouteImport.update({
+  id: '/thung-rac',
+  path: '/thung-rac',
+  getParentRoute: () => QuanTriRoute,
+} as any)
+const QuanTriTuyChinhRoute = QuanTriTuyChinhRouteImport.update({
+  id: '/tuy-chinh',
+  path: '/tuy-chinh',
+  getParentRoute: () => QuanTriRoute,
+} as any)
 const QuanTriVietRoute = QuanTriVietRouteImport.update({
   id: '/viet',
   path: '/viet',
@@ -82,10 +124,17 @@ export interface FileRoutesByFullPath {
   '/login': typeof LoginRoute
   '/quan-tri': typeof QuanTriRouteWithChildren
   '/tin': typeof TinRoute
+  '/api/media': typeof ApiMediaRoute
   '/bai/$slug': typeof BaiSlugRoute
+  '/media/$id': typeof MediaIdRoute
   '/muc/$slug': typeof MucSlugRoute
   '/quan-tri/$id': typeof QuanTriIdRoute
   '/quan-tri/banner': typeof QuanTriBannerRoute
+  '/quan-tri/nhat-ky': typeof QuanTriNhatKyRoute
+  '/quan-tri/thanh-vien': typeof QuanTriThanhVienRoute
+  '/quan-tri/thong-ke': typeof QuanTriThongKeRoute
+  '/quan-tri/thung-rac': typeof QuanTriThungRacRoute
+  '/quan-tri/tuy-chinh': typeof QuanTriTuyChinhRoute
   '/quan-tri/viet': typeof QuanTriVietRoute
   '/quan-tri/': typeof QuanTriIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -94,10 +143,17 @@ export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/login': typeof LoginRoute
   '/tin': typeof TinRoute
+  '/api/media': typeof ApiMediaRoute
   '/bai/$slug': typeof BaiSlugRoute
+  '/media/$id': typeof MediaIdRoute
   '/muc/$slug': typeof MucSlugRoute
   '/quan-tri/$id': typeof QuanTriIdRoute
   '/quan-tri/banner': typeof QuanTriBannerRoute
+  '/quan-tri/nhat-ky': typeof QuanTriNhatKyRoute
+  '/quan-tri/thanh-vien': typeof QuanTriThanhVienRoute
+  '/quan-tri/thong-ke': typeof QuanTriThongKeRoute
+  '/quan-tri/thung-rac': typeof QuanTriThungRacRoute
+  '/quan-tri/tuy-chinh': typeof QuanTriTuyChinhRoute
   '/quan-tri/viet': typeof QuanTriVietRoute
   '/quan-tri': typeof QuanTriIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -108,10 +164,17 @@ export interface FileRoutesById {
   '/login': typeof LoginRoute
   '/quan-tri': typeof QuanTriRouteWithChildren
   '/tin': typeof TinRoute
+  '/api/media': typeof ApiMediaRoute
   '/bai/$slug': typeof BaiSlugRoute
+  '/media/$id': typeof MediaIdRoute
   '/muc/$slug': typeof MucSlugRoute
   '/quan-tri/$id': typeof QuanTriIdRoute
   '/quan-tri/banner': typeof QuanTriBannerRoute
+  '/quan-tri/nhat-ky': typeof QuanTriNhatKyRoute
+  '/quan-tri/thanh-vien': typeof QuanTriThanhVienRoute
+  '/quan-tri/thong-ke': typeof QuanTriThongKeRoute
+  '/quan-tri/thung-rac': typeof QuanTriThungRacRoute
+  '/quan-tri/tuy-chinh': typeof QuanTriTuyChinhRoute
   '/quan-tri/viet': typeof QuanTriVietRoute
   '/quan-tri/': typeof QuanTriIndexRoute
   '/api/auth/$': typeof ApiAuthSplatRoute
@@ -123,10 +186,17 @@ export interface FileRouteTypes {
     | '/login'
     | '/quan-tri'
     | '/tin'
+    | '/api/media'
     | '/bai/$slug'
+    | '/media/$id'
     | '/muc/$slug'
     | '/quan-tri/$id'
     | '/quan-tri/banner'
+    | '/quan-tri/nhat-ky'
+    | '/quan-tri/thanh-vien'
+    | '/quan-tri/thong-ke'
+    | '/quan-tri/thung-rac'
+    | '/quan-tri/tuy-chinh'
     | '/quan-tri/viet'
     | '/quan-tri/'
     | '/api/auth/$'
@@ -135,10 +205,17 @@ export interface FileRouteTypes {
     | '/'
     | '/login'
     | '/tin'
+    | '/api/media'
     | '/bai/$slug'
+    | '/media/$id'
     | '/muc/$slug'
     | '/quan-tri/$id'
     | '/quan-tri/banner'
+    | '/quan-tri/nhat-ky'
+    | '/quan-tri/thanh-vien'
+    | '/quan-tri/thong-ke'
+    | '/quan-tri/thung-rac'
+    | '/quan-tri/tuy-chinh'
     | '/quan-tri/viet'
     | '/quan-tri'
     | '/api/auth/$'
@@ -148,10 +225,17 @@ export interface FileRouteTypes {
     | '/login'
     | '/quan-tri'
     | '/tin'
+    | '/api/media'
     | '/bai/$slug'
+    | '/media/$id'
     | '/muc/$slug'
     | '/quan-tri/$id'
     | '/quan-tri/banner'
+    | '/quan-tri/nhat-ky'
+    | '/quan-tri/thanh-vien'
+    | '/quan-tri/thong-ke'
+    | '/quan-tri/thung-rac'
+    | '/quan-tri/tuy-chinh'
     | '/quan-tri/viet'
     | '/quan-tri/'
     | '/api/auth/$'
@@ -162,7 +246,9 @@ export interface RootRouteChildren {
   LoginRoute: typeof LoginRoute
   QuanTriRoute: typeof QuanTriRouteWithChildren
   TinRoute: typeof TinRoute
+  ApiMediaRoute: typeof ApiMediaRoute
   BaiSlugRoute: typeof BaiSlugRoute
+  MediaIdRoute: typeof MediaIdRoute
   MucSlugRoute: typeof MucSlugRoute
   ApiAuthSplatRoute: typeof ApiAuthSplatRoute
 }
@@ -197,11 +283,25 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TinRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/api/media': {
+      id: '/api/media'
+      path: '/api/media'
+      fullPath: '/api/media'
+      preLoaderRoute: typeof ApiMediaRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/bai/$slug': {
       id: '/bai/$slug'
       path: '/bai/$slug'
       fullPath: '/bai/$slug'
       preLoaderRoute: typeof BaiSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/media/$id': {
+      id: '/media/$id'
+      path: '/media/$id'
+      fullPath: '/media/$id'
+      preLoaderRoute: typeof MediaIdRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/muc/$slug': {
@@ -232,6 +332,41 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof QuanTriBannerRouteImport
       parentRoute: typeof QuanTriRoute
     }
+    '/quan-tri/nhat-ky': {
+      id: '/quan-tri/nhat-ky'
+      path: '/nhat-ky'
+      fullPath: '/quan-tri/nhat-ky'
+      preLoaderRoute: typeof QuanTriNhatKyRouteImport
+      parentRoute: typeof QuanTriRoute
+    }
+    '/quan-tri/thanh-vien': {
+      id: '/quan-tri/thanh-vien'
+      path: '/thanh-vien'
+      fullPath: '/quan-tri/thanh-vien'
+      preLoaderRoute: typeof QuanTriThanhVienRouteImport
+      parentRoute: typeof QuanTriRoute
+    }
+    '/quan-tri/thong-ke': {
+      id: '/quan-tri/thong-ke'
+      path: '/thong-ke'
+      fullPath: '/quan-tri/thong-ke'
+      preLoaderRoute: typeof QuanTriThongKeRouteImport
+      parentRoute: typeof QuanTriRoute
+    }
+    '/quan-tri/thung-rac': {
+      id: '/quan-tri/thung-rac'
+      path: '/thung-rac'
+      fullPath: '/quan-tri/thung-rac'
+      preLoaderRoute: typeof QuanTriThungRacRouteImport
+      parentRoute: typeof QuanTriRoute
+    }
+    '/quan-tri/tuy-chinh': {
+      id: '/quan-tri/tuy-chinh'
+      path: '/tuy-chinh'
+      fullPath: '/quan-tri/tuy-chinh'
+      preLoaderRoute: typeof QuanTriTuyChinhRouteImport
+      parentRoute: typeof QuanTriRoute
+    }
     '/quan-tri/viet': {
       id: '/quan-tri/viet'
       path: '/viet'
@@ -252,6 +387,11 @@ declare module '@tanstack/react-router' {
 interface QuanTriRouteChildren {
   QuanTriIdRoute: typeof QuanTriIdRoute
   QuanTriBannerRoute: typeof QuanTriBannerRoute
+  QuanTriNhatKyRoute: typeof QuanTriNhatKyRoute
+  QuanTriThanhVienRoute: typeof QuanTriThanhVienRoute
+  QuanTriThongKeRoute: typeof QuanTriThongKeRoute
+  QuanTriThungRacRoute: typeof QuanTriThungRacRoute
+  QuanTriTuyChinhRoute: typeof QuanTriTuyChinhRoute
   QuanTriVietRoute: typeof QuanTriVietRoute
   QuanTriIndexRoute: typeof QuanTriIndexRoute
 }
@@ -259,6 +399,11 @@ interface QuanTriRouteChildren {
 const QuanTriRouteChildren: QuanTriRouteChildren = {
   QuanTriIdRoute: QuanTriIdRoute,
   QuanTriBannerRoute: QuanTriBannerRoute,
+  QuanTriNhatKyRoute: QuanTriNhatKyRoute,
+  QuanTriThanhVienRoute: QuanTriThanhVienRoute,
+  QuanTriThongKeRoute: QuanTriThongKeRoute,
+  QuanTriThungRacRoute: QuanTriThungRacRoute,
+  QuanTriTuyChinhRoute: QuanTriTuyChinhRoute,
   QuanTriVietRoute: QuanTriVietRoute,
   QuanTriIndexRoute: QuanTriIndexRoute,
 }
@@ -271,7 +416,9 @@ const rootRouteChildren: RootRouteChildren = {
   LoginRoute: LoginRoute,
   QuanTriRoute: QuanTriRouteWithChildren,
   TinRoute: TinRoute,
+  ApiMediaRoute: ApiMediaRoute,
   BaiSlugRoute: BaiSlugRoute,
+  MediaIdRoute: MediaIdRoute,
   MucSlugRoute: MucSlugRoute,
   ApiAuthSplatRoute: ApiAuthSplatRoute,
 }

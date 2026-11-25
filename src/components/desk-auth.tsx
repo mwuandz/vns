@@ -2,22 +2,10 @@ import { useEffect, useState, type FormEvent } from "react";
 import { useServerFn } from "@tanstack/react-start";
 import { authClient, authEnabled } from "@/lib/auth/client";
 import { loadDeskAccount } from "@/lib/desk-auth.functions";
+import { deskAccount } from "@/lib/desk-account";
+import { claimFounder } from "@/lib/staff.functions";
 
 const BEARER_KEY = "grok-auth.bearer-token";
-const ACCOUNT_DOMAIN = "desk.vietnamsportsdaily.vn";
-
-function accountEmail(raw: string) {
-  const text = raw.trim().toLowerCase();
-  if (!text) throw new Error("Nhập tài khoản");
-  if (text.includes("@")) {
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(text)) throw new Error("Tài khoản không hợp lệ");
-    return { email: text, name: text.split("@")[0] || text };
-  }
-  if (!/^[a-z0-9][a-z0-9._-]{1,30}[a-z0-9]$/.test(text)) {
-    throw new Error("Tài khoản 3–32 ký tự: chữ không dấu, số, dấu chấm hoặc gạch");
-  }
-  return { email: `${text}@${ACCOUNT_DOMAIN}`, name: text };
-}
 
 function rememberSession(response: Response) {
   const token = response.headers.get("set-auth-token");
@@ -38,6 +26,7 @@ function explain(raw: string) {
 
 export function DeskAuthForm() {
   const fetchAccount = useServerFn(loadDeskAccount);
+  const claim = useServerFn(claimFounder);
   const [hasAccount, setHasAccount] = useState<boolean | null>(null);
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
@@ -68,7 +57,7 @@ export function DeskAuthForm() {
     }
     setPending(true);
     try {
-      const account = accountEmail(username);
+      const account = deskAccount(username);
       if (password.length < 8) throw new Error("Mật khẩu tối thiểu 8 ký tự");
       if (!hasAccount && password !== confirm) throw new Error("Mật khẩu nhập lại chưa khớp");
       const result = hasAccount
@@ -81,6 +70,15 @@ export function DeskAuthForm() {
             { onSuccess: (ctx) => rememberSession(ctx.response) },
           );
       if (result.error) throw new Error(result.error.message || "Không đăng nhập được");
+      try {
+        await claim();
+      } catch (caught) {
+        const message = caught instanceof Error ? caught.message : "";
+        if (message.includes("khóa")) {
+          await authClient.signOut();
+          throw new Error("Tài khoản đã bị khóa");
+        }
+      }
       window.location.assign("/quan-tri");
     } catch (caught) {
       setError(explain(caught instanceof Error ? caught.message : "Không đăng nhập được"));
@@ -92,7 +90,7 @@ export function DeskAuthForm() {
     <form className="desk-auth" onSubmit={onSubmit}>
       {hasAccount === null ? <p className="note">Đang mở khóa…</p> : null}
       {hasAccount === false ? (
-        <p className="note">Lần đầu: đặt một tài khoản và mật khẩu. Sau đó chỉ đăng nhập, không tạo thêm.</p>
+        <p className="note">Lần đầu: đây là tài khoản admin. Biên tập viên do admin cấp sau, không tự đăng ký.</p>
       ) : null}
       <label>
         Tài khoản

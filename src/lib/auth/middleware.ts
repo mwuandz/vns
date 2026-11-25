@@ -43,5 +43,7 @@ export const authMiddleware = createMiddleware({ type: "function" })
     // Reject scripted cross-site/sibling requests before touching per-user data.
     assertSameSiteRequest();
     const userId = await requireUserId(context.bearerToken);
+    const { assertDeskOpen } = await import("../desk-lock.server");
+    await assertDeskOpen(userId);
     return next({ context: { userId } });
   });

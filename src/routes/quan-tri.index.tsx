@@ -1,7 +1,9 @@
 import { useEffect, useState } from "react";
 import { Link, createFileRoute } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { categoryLabel, formatWhen } from "@/lib/magazine";
+import { useSectionLabel } from "@/components/chrome";
+import { formatWhen } from "@/lib/magazine";
+import { STATUS_LABEL, isChief } from "@/lib/roles";
 import { loadDesk } from "@/lib/posts.functions";
 
 export const Route = createFileRoute("/quan-tri/")({
@@ -11,6 +13,7 @@ export const Route = createFileRoute("/quan-tri/")({
 
 function DeskHome() {
   const fetchDesk = useServerFn(loadDesk);
+  const label = useSectionLabel();
   const [data, setData] = useState<Awaited<ReturnType<typeof fetchDesk>> | null>(null);
   const [error, setError] = useState("");
 
@@ -48,25 +51,45 @@ function DeskHome() {
         </div>
       </div>
       <div className="desk-head">
-        <h1>Bài viết</h1>
+        <h1>{isChief(data.role) ? "Bài viết" : data.role === "btv" ? "Bài của tôi và chờ duyệt" : "Bài của tôi"}</h1>
         <div className="desk-actions">
-          <Link className="btn ghost" to="/quan-tri/banner">
-            Banner cuối trang
+          {data.role === "admin" ? (
+            <>
+              <Link className="btn ghost" to="/quan-tri/thanh-vien">
+                Tài khoản
+              </Link>
+              <Link className="btn ghost" to="/quan-tri/tuy-chinh">
+                Tùy chỉnh
+              </Link>
+            </>
+          ) : null}
+          <Link className="btn ghost" to="/quan-tri/thong-ke">
+            Thống kê
           </Link>
+          <Link className="btn ghost" to="/quan-tri/thung-rac">
+            Thùng rác
+          </Link>
+          {isChief(data.role) ? (
+            <Link className="btn ghost" to="/quan-tri/nhat-ky">
+              Nhật ký
+            </Link>
+          ) : null}
           <Link className="btn" to="/quan-tri/viet">
             Viết bài mới
           </Link>
         </div>
       </div>
+      {data.posts.length ? (
       <div className="desk-list">
         {data.posts.map((post) => (
           <article key={post.id} className="desk-item">
             <div>
-              <div className="category">{categoryLabel(post.category)}</div>
+              <div className="category">{label(post.category)}</div>
               <h2>{post.title}</h2>
+              {data.role === "admin" && post.ownerName ? <p className="note">{post.ownerName}</p> : null}
               <div className="meta">
-                <span className={post.published ? "badge" : "badge draft"}>
-                  {post.published ? "Công khai" : "Nháp"}
+                <span className={post.status === "published" ? "badge" : "badge draft"}>
+                  {STATUS_LABEL[post.status] ?? "Nháp"}
                 </span>
                 {post.featured ? <span className="badge star">Trang nhất</span> : null}
                 <span>
@@ -88,6 +111,9 @@ function DeskHome() {
           </article>
         ))}
       </div>
+      ) : (
+        <p className="note">Chưa có bài nào của bạn.</p>
+      )}
     </>
   );
 }

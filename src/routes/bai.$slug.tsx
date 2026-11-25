@@ -1,8 +1,9 @@
 import { useEffect } from "react";
-import { createFileRoute, Link, notFound } from "@tanstack/react-router";
+import { createFileRoute, Link, notFound, useRouteContext } from "@tanstack/react-router";
 import { useServerFn } from "@tanstack/react-start";
-import { SiteChrome } from "@/components/chrome";
-import { articleBlocks, categoryLabel, formatWhen } from "@/lib/magazine";
+import { ArticleBody } from "@/components/article-body";
+import { AdPlacement, SiteChrome, useSectionLabel } from "@/components/chrome";
+import { formatWhen } from "@/lib/magazine";
 import { bumpReads, loadArticle } from "@/lib/posts.functions";
 
 export const Route = createFileRoute("/bai/$slug")({
@@ -14,7 +15,13 @@ export const Route = createFileRoute("/bai/$slug")({
   head: ({ loaderData }) => ({
     meta: [
       {
-        title: loaderData ? `${loaderData.post.title} — Vietnam Sports Daily` : "Bài viết",
+        title: loaderData
+          ? `${loaderData.post.seoTitle || loaderData.post.title} — Vietnam Sports Daily`
+          : "Bài viết",
+      },
+      {
+        name: "description",
+        content: loaderData?.post.seoDescription || loaderData?.post.excerpt || "",
       },
     ],
   }),
@@ -24,8 +31,9 @@ export const Route = createFileRoute("/bai/$slug")({
 
 function Article() {
   const { post, related, breaking } = Route.useLoaderData();
+  const { chrome } = useRouteContext({ from: "__root__" });
+  const label = useSectionLabel();
   const markRead = useServerFn(bumpReads);
-  const blocks = articleBlocks(post.body);
 
   useEffect(() => {
     const key = `vsd-read:${post.slug}`;
@@ -38,7 +46,7 @@ function Article() {
     <SiteChrome breaking={breaking}>
       <article className="story">
         <div>
-          <div className="kicker">{post.kicker || categoryLabel(post.category)}</div>
+          <div className="kicker">{post.kicker || label(post.category)}</div>
           <h1>{post.title}</h1>
           <p className="deck">{post.excerpt}</p>
           <div className="byline">
@@ -49,15 +57,9 @@ function Article() {
               <img src={post.cover} alt="" />
             </figure>
           ) : null}
-          <div className="story-body">
-            {blocks.map((block, index) =>
-              block.type === "quote" ? (
-                <blockquote key={index}>{block.text}</blockquote>
-              ) : (
-                <p key={index}>{block.text}</p>
-              ),
-            )}
-          </div>
+          <AdPlacement ad={chrome.ads.article} plain />
+          <ArticleBody body={post.body} />
+          <AdPlacement ad={chrome.ads.after} plain />
         </div>
         <aside className="rail">
           <div className="railbox">
@@ -69,7 +71,7 @@ function Article() {
                     {item.cover ? <img src={item.cover} alt="" /> : <span className="ph" />}
                     <div>
                       <strong>{item.title}</strong>
-                      <span>{categoryLabel(item.category)}</span>
+                      <span>{label(item.category)}</span>
                     </div>
                   </Link>
                 ))
@@ -79,7 +81,7 @@ function Article() {
             </div>
           </div>
           <Link className="btn" to="/muc/$slug" params={{ slug: post.category }}>
-            {categoryLabel(post.category)} ↗
+            {label(post.category)} ↗
           </Link>
         </aside>
       </article>

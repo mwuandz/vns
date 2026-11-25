@@ -1,5 +1,5 @@
 import { createFileRoute, notFound } from "@tanstack/react-router";
-import { SiteChrome, StoryCard } from "@/components/chrome";
+import { SiteChrome, JournalRow } from "@/components/chrome";
 import { loadSection } from "@/lib/posts.functions";
 
 export const Route = createFileRoute("/muc/$slug")({
@@ -21,15 +21,13 @@ function SectionPage() {
     <SiteChrome breaking={data.breaking}>
       <div className="kicker">Chuyên mục</div>
       <div className="section-head">
-        <h2>
-          <span>VSD</span> / {data.label}
-        </h2>
+        <h2>{data.label}</h2>
         <span className="more">{data.posts.length} bài</span>
       </div>
       {data.posts.length ? (
-        <div className="cards">
+        <div className="entries">
           {data.posts.map((post) => (
-            <StoryCard key={post.id} post={post} />
+            <JournalRow key={post.id} post={post} />
           ))}
         </div>
       ) : (
