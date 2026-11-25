@@ -1,7 +1,7 @@
 import type { CSSProperties, ReactNode } from "react";
 import { Link, useRouteContext, useRouterState } from "@tanstack/react-router";
 import type { AdSlot } from "@/lib/customize.functions";
-import { editionLine, categoryLabel, formatWhen, type Post } from "@/lib/magazine";
+import { categoryLabel, formatWhen, type Post } from "@/lib/magazine";
 
 export function useSectionLabel() {
   const { chrome } = useRouteContext({ from: "__root__" });
@@ -30,13 +30,7 @@ export function AdPlacement({ ad, plain = false }: { ad?: AdSlot; plain?: boolea
   );
 }
 
-export function SiteChrome({
-  breaking,
-  children,
-}: {
-  breaking?: { title: string; slug: string } | null;
-  children: ReactNode;
-}) {
+export function SiteChrome({ children }: { breaking?: { title: string; slug: string } | null; children: ReactNode }) {
   const pathname = useRouterState({ select: (state) => state.location.pathname });
   const { chrome } = useRouteContext({ from: "__root__" });
   const { settings, ads } = chrome;
@@ -45,16 +39,8 @@ export function SiteChrome({
   const tone = { ["--color-brand" as string]: settings.accent } as CSSProperties;
 
   return (
-    <div style={tone}>
-      <div className="top">
-        <div className="wrap">
-          <span>{editionLine()}</span>
-          <div className="top-right">
-            <Link to="/quan-tri">Viết bài</Link>
-          </div>
-        </div>
-      </div>
-      <header className="mast">
+    <div className="blog" style={tone}>
+      <header className="blog-head">
         <div className="wrap">
           <Link to="/" className="logo">
             <img src={settings.logoUrl || "/brand-logo.jpg"} alt="" />
@@ -63,80 +49,51 @@ export function SiteChrome({
             <strong>{settings.siteName}</strong>
             <span>{settings.tagline}</span>
           </div>
+          <nav className="blog-nav">
+            <Link to="/" className={pathname === "/" ? "active" : undefined}>
+              Trang chủ
+            </Link>
+            {nav.map((item) => {
+              const href = `/muc/${item.slug}`;
+              return (
+                <Link
+                  key={item.slug}
+                  to="/muc/$slug"
+                  params={{ slug: item.slug }}
+                  className={pathname === href ? "active" : undefined}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
+            <Link to="/tin" className={pathname === "/tin" ? "active" : undefined}>
+              Tất cả
+            </Link>
+          </nav>
         </div>
       </header>
-      <nav className="nav">
-        <div className="wrap">
-          <Link to="/" className={pathname === "/" ? "active" : undefined}>
-            Trang chủ
-          </Link>
-          {nav.map((item) => {
-            const href = `/muc/${item.slug}`;
-            return (
-              <Link
-                key={item.slug}
-                to="/muc/$slug"
-                params={{ slug: item.slug }}
-                className={pathname === href ? "active" : undefined}
-              >
-                {item.label}
-              </Link>
-            );
-          })}
-          <Link to="/tin" className={pathname === "/tin" ? "live active" : "live"}>
-            <i className="dot" /> Mới nhất
-          </Link>
-        </div>
-      </nav>
-      {settings.showBreaking ? (
-        <div className="breaking">
-          <div className="wrap">
-            <b>Mới</b>
-            {breaking ? (
-              <Link to="/bai/$slug" params={{ slug: breaking.slug }}>
-                {breaking.title}
-              </Link>
-            ) : (
-              <span>Những câu chuyện thể thao đáng đọc hôm nay.</span>
-            )}
-          </div>
-        </div>
-      ) : null}
       <AdPlacement ad={ads.mast} />
       <main className="page wrap">{children}</main>
       <AdPlacement ad={ads.footer} />
       <footer className="site">
-        <div className="wrap">
-          <div className="foot">
-            <div>
-              <div className="foot-name">{settings.siteName}</div>
-              <p>{settings.footerText}</p>
-              <SocialLinks
-                facebook={settings.facebookUrl}
-                youtube={settings.youtubeUrl}
-                tiktok={settings.tiktokUrl}
-              />
-            </div>
-            <div>
-              <h4>Chuyên mục</h4>
-              {footerSections.map((item) => (
-                <Link key={item.slug} to="/muc/$slug" params={{ slug: item.slug }}>
-                  {item.label}
-                </Link>
-              ))}
-            </div>
-            <div>
-              <h4>Tòa soạn</h4>
-              <Link to="/quan-tri">Bàn biên tập</Link>
-              <Link to="/tin">Tin đã đăng</Link>
-              <Link to="/muc/$slug" params={{ slug: "goc-nhin" }}>
-                Góc nhìn
+        <div className="wrap blog-foot">
+          <div className="foot-name">{settings.siteName}</div>
+          <p>{settings.footerText}</p>
+          <div className="foot-tags">
+            {footerSections.map((item) => (
+              <Link key={item.slug} to="/muc/$slug" params={{ slug: item.slug }}>
+                {item.label}
               </Link>
-            </div>
+            ))}
           </div>
+          <SocialLinks
+            facebook={settings.facebookUrl}
+            youtube={settings.youtubeUrl}
+            tiktok={settings.tiktokUrl}
+          />
           <div className="copy">
             <span>© 2026 {settings.siteName}</span>
-            <span>Independent sports coverage</span>
+            <Link to="/quan-tri">Viết bài</Link>
           </div>
         </div>
       </footer>

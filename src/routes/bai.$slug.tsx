@@ -44,46 +44,34 @@ function Article() {
 
   return (
     <SiteChrome breaking={breaking}>
-      <article className="story">
-        <div>
-          <div className="kicker">{post.kicker || label(post.category)}</div>
-          <h1>{post.title}</h1>
-          <p className="deck">{post.excerpt}</p>
-          <div className="byline">
-            {post.author} · {formatWhen(post.publishedAt)} · {post.minutes} phút đọc · {post.reads} lượt
-          </div>
-          {post.cover ? (
-            <figure className="story-figure">
-              <img src={post.cover} alt="" />
-            </figure>
-          ) : null}
-          <AdPlacement ad={chrome.ads.article} plain />
-          <ArticleBody body={post.body} />
-          <AdPlacement ad={chrome.ads.after} plain />
+      <article className="post">
+        <Link className="category" to="/muc/$slug" params={{ slug: post.category }}>
+          {post.kicker || label(post.category)}
+        </Link>
+        <h1>{post.title}</h1>
+        <p className="deck">{post.excerpt}</p>
+        <div className="byline">
+          {post.author} · {formatWhen(post.publishedAt)} · {post.minutes} phút đọc
         </div>
-        <aside className="rail">
-          <div className="railbox">
-            <h3 className="railhead">Cùng chuyên mục</h3>
-            <div className="related">
-              {related.length ? (
-                related.map((item) => (
-                  <Link key={item.id} to="/bai/$slug" params={{ slug: item.slug }}>
-                    {item.cover ? <img src={item.cover} alt="" /> : <span className="ph" />}
-                    <div>
-                      <strong>{item.title}</strong>
-                      <span>{label(item.category)}</span>
-                    </div>
-                  </Link>
-                ))
-              ) : (
-                <p className="note">Chưa có bài liền kề trong chuyên mục này.</p>
-              )}
-            </div>
-          </div>
-          <Link className="btn" to="/muc/$slug" params={{ slug: post.category }}>
-            {label(post.category)} ↗
-          </Link>
-        </aside>
+        {post.cover ? (
+          <figure className="story-figure">
+            <img src={post.cover} alt="" />
+          </figure>
+        ) : null}
+        <AdPlacement ad={chrome.ads.article} plain />
+        <ArticleBody body={post.body} />
+        <AdPlacement ad={chrome.ads.after} plain />
+        {related.length ? (
+          <section className="more-posts">
+            <h2>Bài khác</h2>
+            {related.map((item) => (
+              <Link key={item.id} to="/bai/$slug" params={{ slug: item.slug }}>
+                <strong>{item.title}</strong>
+                <span>{label(item.category)}</span>
+              </Link>
+            ))}
+          </section>
+        ) : null}
       </article>
     </SiteChrome>
   );

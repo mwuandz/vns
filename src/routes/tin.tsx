@@ -12,11 +12,7 @@ function Archive() {
   const { posts, breaking } = Route.useLoaderData();
   return (
     <SiteChrome breaking={breaking}>
-      <div className="kicker">Nhật ký</div>
-      <div className="section-head">
-        <h2>Các bài đã đăng</h2>
-        <span className="more">{posts.length} bài</span>
-      </div>
+      <h1 className="page-title">Tất cả bài</h1>
       <div className="entries">
         {posts.map((post) => (
           <JournalRow key={post.id} post={post} />

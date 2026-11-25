@@ -19,11 +19,8 @@ function SectionPage() {
   const data = Route.useLoaderData();
   return (
     <SiteChrome breaking={data.breaking}>
-      <div className="kicker">Chuyên mục</div>
-      <div className="section-head">
-        <h2>{data.label}</h2>
-        <span className="more">{data.posts.length} bài</span>
-      </div>
+      <h1 className="page-title">{data.label}</h1>
+      <p className="about">{data.posts.length} bài</p>
       {data.posts.length ? (
         <div className="entries">
           {data.posts.map((post) => (

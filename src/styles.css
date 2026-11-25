@@ -510,7 +510,39 @@ main.page { padding: 30px 0 65px; }
 }
 .sport:hover span { color: #ffe0e2; }
 
-.journal-intro { max-width: 680px; margin: 6px 0 28px; }
+.blog .wrap { width: min(720px, calc(100% - 40px)); }
+.blog-head { padding: 42px 0 6px; background: transparent; }
+.blog-head .wrap { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 10px; }
+.blog-head .mast-id span { max-width: 36em; }
+.blog-nav { display: flex; flex-wrap: wrap; justify-content: center; gap: 6px 16px; margin-top: 8px; }
+.blog-nav a { color: var(--color-soft); font-size: 15px; }
+.blog-nav a.active, .blog-nav a:hover { color: var(--color-brand); }
+.about { color: var(--color-muted); font-size: 17px; line-height: 1.6; margin: 8px 0 26px; }
+.page-title { font-size: clamp(34px, 5vw, 48px); margin: 8px 0 6px; letter-spacing: -0.03em; }
+.more-link { margin-top: 8px; }
+.more-link a { color: var(--color-brand); font-weight: 600; }
+.blog-foot { text-align: center; padding-bottom: 28px; }
+.blog-foot p { margin: 10px auto 0; max-width: 460px; }
+.foot-tags { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 14px; margin-top: 16px; }
+.foot-tags a { color: var(--color-soft); font-size: 14px; }
+.blog-foot .social { justify-content: center; }
+.blog-foot .copy { justify-content: center; gap: 18px; text-transform: none; letter-spacing: 0; font-size: 13px; }
+.blog-foot .copy a:hover { color: var(--color-brand); }
+.post h1 {
+  font-size: clamp(34px, 5vw, 52px);
+  line-height: 1.12;
+  letter-spacing: -0.03em;
+  margin: 8px 0 12px;
+}
+.post .deck { font-family: var(--font-serif); font-size: 20px; line-height: 1.45; color: #3d4450; }
+.post .byline { color: var(--color-muted); margin: 8px 0 18px; font-size: 14px; }
+.more-posts { margin-top: 40px; border-top: 1px solid var(--color-line); padding-top: 8px; }
+.more-posts h2 { font-size: 22px; margin: 12px 0; }
+.more-posts a { display: block; padding: 12px 0; border-bottom: 1px solid var(--color-line); }
+.more-posts strong { display: block; font-size: 20px; font-weight: 560; }
+.more-posts span { color: var(--color-muted); font-size: 13px; }
+.lead { margin-bottom: 8px; }
+.lead h1 { font-size: clamp(30px, 4vw, 42px); }
 .journal-intro p { margin: 0; color: var(--color-muted); font-size: 16px; line-height: 1.6; }
 .journal-intro h2 {
   font-size: clamp(32px, 4vw, 46px);

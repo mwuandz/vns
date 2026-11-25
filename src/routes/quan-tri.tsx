@@ -16,7 +16,7 @@ function DeskLayout() {
           </div>
           <div className="desk-actions">
             <UserButton />
-            <Link to="/">Về tờ báo</Link>
+            <Link to="/">Xem blog</Link>
           </div>
         </div>
       </header>
